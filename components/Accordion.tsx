@@ -32,7 +32,7 @@ export default function Accordion({ items, onTabClick }: AccordionProps) {
               {item.content.map((line, lineIndex) => (
                 <button
                   key={lineIndex}
-                  className="text-gray-700 hover:text-[#D6DE67]"
+                  className="text-gray-700 hover:text-[#e65050]"
                   onClick={() => onTabClick(line)}
                 >
                   {line}

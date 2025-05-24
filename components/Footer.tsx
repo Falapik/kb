@@ -2,60 +2,92 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer>
-      <div className=" mx-[50px] h-[3px] bg-[#D6DE67] mt-[50px]"></div>
-      <div className="flex items-start justify-between mr-[50px]">
-        <div className="flex ml-[50px] w-full max-w-[800px] justify-between mt-[30px]">
-          <div className="text-[28px] font-bold flex flex-col gap-5">
-            <div className="">
-              <h1 className="">Меню</h1>
-            </div>
-            <div className="">
-              <h1 className="">Магазины</h1>
-            </div>
-            <div className="">
-              <h1 className="">О нас</h1>
-            </div>
+    <footer className="mt-[50px] bg-[#fff] shadow-[0px_4px_80px_0px_rgba(0,0,0,0.15)] rounded-t-[40px] pt-[30px] pb-[40px] px-[30px]">
+      <div className="h-[3px] bg-[#BE1010] mb-[40px] mx-[20px]"></div>
+      <div className="flex flex-col md:flex-row justify-between gap-[40px] max-w-[1440px] mx-auto">
+        <div className="flex flex-col md:flex-row flex-wrap gap-[40px] w-full max-w-[950px]">
+          <div className="text-[28px] font-bold flex flex-col gap-5 min-w-[150px]">
             <Image
-              src="/logo1.svg"
-              alt="Vercel Logo"
+              src="/logo123.svg"
+              alt="Info Logo"
               width={158}
               height={52}
-              className="mr-[30px] mt-[30px] mb-[20px]"
+              className="mb-[10px] max-w-[158px]"
             />
+            <h1 className="cursor-pointer hover:text-[#BE1010] transition-colors">
+              Меню
+            </h1>
+            <h1 className="cursor-pointer hover:text-[#BE1010] transition-colors">
+              Магазины
+            </h1>
+            <h1 className="cursor-pointer hover:text-[#BE1010] transition-colors">
+              О нас
+            </h1>
+            <div className="flex items-center gap-[16px] justify-center md:justify-start mt-[10px] md:mt-[0px]">
+              <Image
+                src="/vk.svg"
+                alt="VK"
+                width={40}
+                height={40}
+                className="cursor-pointer hover:scale-110 transition-transform"
+              />
+              <Image
+                src="/tg.svg"
+                alt="Telegram"
+                width={40}
+                height={40}
+                className="cursor-pointer hover:scale-110 transition-transform"
+              />
+            </div>
           </div>
-          <div className="">
-            <div className="mb-[20px] text-[19px] text-[#7E7E7E] font-semibold">
+
+          <div className="text-[19px] text-[#7E7E7E] font-semibold flex flex-col gap-2 min-w-[170px] ml-[120px]">
+            <div className="mb-[10px] text-black text-[20px] font-bold">
               Помощь
             </div>
-            <div className="">Вопросы и ответы</div>
-            <div className="">Доставка</div>
-            <div className="">Обратная связь</div>
-            <div className="">Возврат</div>
-            <div className="">Карта сайта</div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Вопросы и ответы
+            </div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Доставка
+            </div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Обратная связь
+            </div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Возврат
+            </div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Карта сайта
+            </div>
           </div>
-          <div className="">
-            <div className="mb-[20px] text-[19px] text-[#7E7E7E] font-semibold">
+
+          <div className="text-[19px] text-[#7E7E7E] font-semibold flex flex-col gap-2 min-w-[170px]">
+            <div className="mb-[10px] text-black text-[20px] font-bold">
               Наша компания
             </div>
-            <div className="">Бонусная программа</div>
-            <div className="">Сотрудничество</div>
-            <div className="">Партнеры</div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Бонусная программа
+            </div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Сотрудничество
+            </div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Партнеры
+            </div>
           </div>
-          <div className="">
-            <div className="mb-[20px] text-[19px] text-[#7E7E7E] font-semibold">
+
+          <div className="text-[19px] text-[#7E7E7E] font-semibold flex flex-col gap-2 min-w-[170px]">
+            <div className="mb-[10px] text-black text-[20px] font-bold">
               Наши точки
             </div>
-            <div className="">Карта</div>
-            <div className="">Открытие</div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Карта
+            </div>
+            <div className="cursor-pointer hover:text-black transition-colors">
+              Открытие
+            </div>
           </div>
-        </div>
-        <div className="flex gap-[16px] mt-[30px]">
-          <Image src="/yt.svg" alt="Vercel Logo" width={24} height={24} />{" "}
-          <Image src="/vk.svg" alt="Vercel Logo" width={24} height={24} />{" "}
-          <Image src="/tg.svg" alt="Vercel Logo" width={24} height={24} />{" "}
-          <Image src="/fb.svg" alt="Vercel Logo" width={24} height={24} />{" "}
-          <Image src="/xt.svg" alt="Vercel Logo" width={24} height={24} />
         </div>
       </div>
     </footer>

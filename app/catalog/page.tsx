@@ -1,15 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, ReactNode } from "react";
+import React, { useState, useEffect } from "react";
 import Accordion from "@/components/Accordion";
+import { useProducts } from "@/app/context/ProductContext";
+import { tabItems as initialTabItems } from "./catalogData";
+import { useCart } from "@/app/context/CartContext";
 
 export default function Catalog() {
   const [option1, setOption1] = useState("");
   const [option2, setOption2] = useState("");
   const [option3, setOption3] = useState("");
-  const [activeTab, setActiveTab] = useState<string>("Бургеры");
+  const [activeTab, setActiveTab] = useState<string>("Вода");
   const [searchQuery, setSearchQuery] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [modalData, setModalData] = useState<{
     title?: string;
     description?: string;
@@ -18,6 +22,29 @@ export default function Catalog() {
     price?: string;
   }>({});
   const [isModalOpen, setModalOpen] = useState(false);
+  const { items } = useProducts();
+  const { addToCart } = useCart();
+  const [tabItems, setTabItems] = useState(initialTabItems);
+
+  useEffect(() => {
+    const savedItems = localStorage.getItem("tabItems");
+    if (savedItems) {
+      setTabItems(JSON.parse(savedItems));
+    }
+  }, []);
+
+  const handleAddToCart = () => {
+    if (modalData.title) {
+      const itemWithQuantity = {
+        ...modalData,
+        quantity,
+        price: parseInt(modalData.price.replace(/[^\d]/g, ""), 10),
+      };
+      addToCart(itemWithQuantity);
+      setModalOpen(false);
+      setQuantity(1);
+    }
+  };
 
   const handleChange1 = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setOption1(event.target.value);
@@ -43,6 +70,7 @@ export default function Catalog() {
     price: string;
   }) => {
     setModalData(data);
+    setQuantity(1);
     setModalOpen(true);
   };
 
@@ -50,159 +78,88 @@ export default function Catalog() {
     setModalOpen(false);
   };
 
-  const accordionItems = [
-    {
-      title: "Заморозка",
-      content: ["Бургеры", "Пицца", "Мороженное"],
-    },
-    {
-      title: "Суши роллы",
-      content: ["Сеты", "Запеченое", "Сырые"],
-    },
-    {
-      title: "Горячее",
-      content: ["Супы", "Салаты", "Второе"],
-    },
-  ];
-
-  const tabItems: Record<string, any[]> = {
-    Бургеры: [
-      {
-        title: "Чикенбургер",
-        description:
-          "Наш фирменный куриный бургер с нежной курочкой в хрустящей панировке.",
-        imageSrc: "/bb.png",
-        weight: 200,
-        price: 330,
-      },
-      {
-        title: "Чизбургер",
-        description: "Бифштекс из 100% говядины с ломтиком сыра.",
-        imageSrc: "/bb2.png",
-        weight: 250,
-        price: 350,
-      },
-      {
-        title: "Яйцебургер",
-        description: "Нежная говяжья котлета с яйцом.",
-        imageSrc: "/bb3.png",
-        weight: 300,
-        price: 420,
-      },
-      {
-        title: 'Комбо "Чизбургер+фри+кетчуп"',
-        description: "Чизбургер с картошкой фри и кетчупом.",
-        imageSrc: "/bb4.png",
-        weight: 400,
-        price: 500,
-      },
-    ],
-    Пицца: [
-      {
-        title: "Маргарита",
-        description: "Классическая пицца с сыром и томатным соусом.",
-        imageSrc: "/marg.png",
-        weight: 400,
-        price: 450,
-      },
-      {
-        title: "Пепперони",
-        description: "Острая пицца с колбасой пепперони.",
-        imageSrc: "/pep.jpg",
-        weight: 500,
-        price: 550,
-      },
-      {
-        title: "Белуччи",
-        description: "Острая пицца с колбасой пепперони.",
-        imageSrc: "/bel.jpg",
-        weight: 500,
-        price: 550,
-      },
-      {
-        title: "Космос",
-        description: "Острая пицца с колбасой пепперони.",
-        imageSrc: "/kos.png",
-        weight: 500,
-        price: 550,
-      },
-    ],
-  };
-
-  // Применение фильтров
   const filteredItems =
     tabItems[activeTab]
       ?.filter((item) => item.title.toLowerCase().includes(searchQuery))
       .sort((a, b) => {
         if (option2 === "Дорогое") return b.price - a.price;
         if (option2 === "Недорогое") return a.price - b.price;
-        if (option3 === "Тяжелое") return b.weight - a.weight;
-        if (option3 === "Легкое") return a.weight - b.weight;
+        if (option3 === "Макси") return b.weight - a.weight;
+        if (option3 === "Мини") return a.weight - b.weight;
         return 0;
       }) || [];
 
   return (
-    <div>
-      <div className="ml-[50px] mt-[30px] flex justify-between">
-        <div className="flex">
-          <div className="text-[32px]">Меню</div>
-          <div className="flex gap-[20px] ml-[30px]">
-            <select
-              id="dropdown1"
-              value={option1}
-              onChange={handleChange1}
-              className="border-[#000] border-[1px] px-[10px] rounded-[10px]"
-            >
-              <option value="">По популярности</option>
-              <option value="Популярное">Популярное</option>
-              <option value="Непопулярное">Непопулярное</option>
-            </select>
-            <select
-              id="dropdown2"
-              value={option2}
-              onChange={handleChange2}
-              className="border-[#000] border-[1px] px-[10px] rounded-[10px]"
-            >
-              <option value="">По цене</option>
-              <option value="Дорогое">Дорогое</option>
-              <option value="Недорогое">Недорогое</option>
-            </select>
-            <select
-              id="dropdown3"
-              value={option3}
-              onChange={handleChange3}
-              className="border-[#000] border-[1px] px-[10px] rounded-[10px]"
-            >
-              <option value="">По граммовке</option>
-              <option value="Легкое">Легкое</option>
-              <option value="Тяжелое">Тяжелое</option>
-            </select>
-          </div>
+    <div className="bg-white min-h-screen text-black px-5 pb-10">
+      <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h1 className="text-3xl font-semibold">Каталог</h1>
+        <div className="flex gap-3 flex-wrap">
+          <select
+            value={option1}
+            onChange={handleChange1}
+            className="bg-gray-50 border border-neutral-300 px-3 py-2 rounded-lg focus:outline-none"
+          >
+            <option value="">По популярности</option>
+            <option value="Популярное">Популярное</option>
+            <option value="Непопулярное">Непопулярное</option>
+          </select>
+          <select
+            value={option2}
+            onChange={handleChange2}
+            className="bg-gray-50 border border-neutral-300 px-3 py-2 rounded-lg focus:outline-none"
+          >
+            <option value="">По цене</option>
+            <option value="Дорогое">Дорогое</option>
+            <option value="Недорогое">Недорогое</option>
+          </select>
+          <select
+            value={option3}
+            onChange={handleChange3}
+            className="bg-gray-50 border border-neutral-300 px-3 py-2 rounded-lg focus:outline-none"
+          >
+            <option value="">По граммовке</option>
+            <option value="Мини">Мини</option>
+            <option value="Макси">Макси</option>
+          </select>
         </div>
       </div>
-      <p className="ml-[50px] mt-[5px] text-[24px]">
-        Фильтрация: {`${option1} ${option2} ${option3}`}
+
+      <p className="mt-4 text-lg text-gray-500">
+        {`${option1} ${option2} ${option3}`}
       </p>
-      <div className="flex">
-        <div className="ml-[50px] mt-5 w-[200px]">
-          <Accordion items={accordionItems} onTabClick={setActiveTab} />
+
+      <div className="flex flex-wrap mt-6">
+        <div className="w-full sm:w-1/4 pr-4">
+          <Accordion
+            items={[
+              { title: "Вода", content: ["Вода", "Соки", "Газировка"] },
+              { title: "Снеки", content: ["Чипсы", "Кириешки", "Орешки"] },
+              { title: "Макароны", content: ["Рожки", "Спагетти", "Паутинка"] },
+              {
+                title: "Чипсы",
+                content: ["Lay's", "Pringles", "Русская картошка"],
+              },
+            ]}
+            onTabClick={setActiveTab}
+          />
         </div>
-        <div className="ml-[50px] mt-5">
+        <div className="w-full sm:w-3/4">
           <input
             type="text"
             placeholder="Поиск по названию..."
             value={searchQuery}
             onChange={handleSearch}
-            className="border border-gray-300 rounded-md p-2 mb-4 w-full"
+            className="w-full p-3 rounded-md bg-gray-50 text-black border border-neutral-300 mb-6 placeholder:text-gray-400 focus:outline-none"
           />
+
           {activeTab ? (
-            <div className="p-4 rounded-lg">
-              {filteredItems && filteredItems.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              {filteredItems.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {filteredItems.map((item, index) => (
                     <div
                       key={index}
-                      className="max-w-[313px] w-full h-[407px] bg-[#3b3b3b] rounded-[23px] flex flex-col items-center gap-3 pb-[30px] cursor-pointer"
+                      className="bg-white rounded-2xl overflow-hidden shadow-md transition-transform hover:scale-[1.02] duration-300 cursor-pointer"
                       onClick={() =>
                         handleOpenModal({
                           title: item.title,
@@ -218,16 +175,14 @@ export default function Catalog() {
                         alt={item.title}
                         width={313}
                         height={269}
-                        className="max-w-[313px] w-full h-[269px] rounded-tl-[23px] rounded-tr-[23px]"
+                        className="w-full h-[269px] object-contain"
                       />
-                      <div className="ml-[20px]">
-                        <div className="text-[#d6de66] text-xl font-bold ">
+                      <div className="p-4 space-y-1">
+                        <div className="text-black text-xl font-bold">
                           {item.price}₽
                         </div>
-                        <div className="text-white text-base font-normal ">
-                          {item.title}
-                        </div>
-                        <div className="max-w-[262px] w-full text-[#c6c6c6] text-sm font-normal">
+                        <div className="text-black text-base">{item.title}</div>
+                        <div className="text-sm text-gray-500">
                           {item.description}
                         </div>
                       </div>
@@ -235,38 +190,64 @@ export default function Catalog() {
                   ))}
                 </div>
               ) : (
-                <p>
-                  В данный момент у нас нет этого продукта. Приносим своии
-                  извинения:(
+                <p className="text-gray-500 mt-4">
+                  В данный момент у нас нет этого продукта. Приносим извинения
+                  :(
                 </p>
               )}
             </div>
           ) : (
-            <div className="text-gray-500">Выберите элемент из меню</div>
+            <p className="text-gray-500">Выберите элемент из каталога</p>
           )}
         </div>
       </div>
+
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 max-w-[600px] w-full flex">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-white text-black rounded-xl p-6 max-w-2xl w-full shadow-lg flex flex-col sm:flex-row gap-6">
             <Image
-              src={modalData.imageSrc || ""}
+              src={modalData.imageSrc}
               alt="Product"
               width={200}
               height={200}
-              className="rounded-lg"
+              className="rounded-lg object-contain"
             />
-            <div className="ml-4">
-              <h2 className="text-2xl font-bold mb-2">{modalData.title}</h2>
+            <div className="flex-1 space-y-2">
+              <h2 className="text-2xl font-bold">{modalData.title}</h2>
               <p>{modalData.description}</p>
-              <p>Вес: {modalData.weight}</p>
-              <p>Цена: {modalData.price}</p>
-              <button
-                onClick={handleCloseModal}
-                className="mt-4 px-4 py-2 bg-[#d6de66] text-black rounded-md"
-              >
-                Закрыть
-              </button>
+              <p className="text-sm text-gray-600">Вес: {modalData.weight}</p>
+              <p className="text-sm text-gray-600">Цена: {modalData.price}</p>
+
+              <div className="flex items-center gap-3 mt-4">
+                <button
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                  className="w-8 h-8 bg-gray-200 hover:bg-gray-300 text-lg rounded-md"
+                >
+                  –
+                </button>
+                <span className="text-lg font-semibold">{quantity}</span>
+                <button
+                  onClick={() => setQuantity((q) => q + 1)}
+                  className="w-8 h-8 bg-gray-200 hover:bg-gray-300 text-lg rounded-md"
+                >
+                  +
+                </button>
+              </div>
+
+              <div className="flex flex-wrap gap-3 mt-4">
+                <button
+                  onClick={handleAddToCart}
+                  className="bg-[#BE1010] hover:bg-[#a50d0d] transition-colors text-white px-4 py-2 rounded-md"
+                >
+                  Добавить в корзину
+                </button>
+                <button
+                  onClick={handleCloseModal}
+                  className="bg-gray-200 hover:bg-gray-300 transition-colors text-black px-4 py-2 rounded-md"
+                >
+                  Закрыть
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -29,8 +29,13 @@ export default {
     },
     extend: {
       backgroundImage: {
-        "custom-image": "url('/image.jpeg')",
-        "card-image": "url('/card1.png')",
+        "custom-image": "url('/main0.jpg')",
+        "card-image": "url('/card11.jpeg')",
+        "card-image2": "url('/card12.jpg')",
+        "card-image3": "url('/card13.jpg')",
+        "card-image4": "url('/card14.jpg')",
+        "card-image5": "url('/card15.jpg')",
+        "card-image6": "url('/card16.jpg')",
       },
       colors: {
         background: "var(--background)",
